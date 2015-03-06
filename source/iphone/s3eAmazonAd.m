@@ -165,6 +165,16 @@ const static struct
     m_AdView = [AmazonAdView amazonAdViewWithAdSize:sizeToRequest];
     [m_AdView retain];
     m_AdView.delegate = self;
+
+    UIViewController* viewController = [self viewControllerForPresentingModalView];
+    CGSize screenSize = viewController.view.frame.size;
+    CGSize adSize = m_AdView.frame.size;
+    if (adSize.width > screenSize.width)
+    {
+        CGFloat scale = screenSize.width / (float) adSize.width;
+        m_AdView.transform = CGAffineTransformScale(CGAffineTransformIdentity, scale, scale);
+    }
+    
     AmazonAdOptions* options = [self setUpOptions];
     if (timeout > 0)
         options.timeout = timeout;
