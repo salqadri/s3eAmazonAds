@@ -1,0 +1,80 @@
+# mkf file for building extension s3eAmazonAds.
+# NOTE: This file was originally written by the extension builder, but will not
+# be overwritten (unless --force is specified) and is intended to be modified.
+display_name "Extensions/s3eAmazonAds"
+
+includepath source/h
+includepath h
+
+defines
+{
+    #Define the verbose channel to be off by default (but controllable by icf)
+    IW_TRACE_CHANNEL_AMAZONADS_VERBOSE=2
+
+    #This macro indicates that this extension is being built
+    S3E_EXT_AMAZONADS
+}
+
+#This command re-generates the relevant source files from the s4e when
+#the mkb is run
+extension
+{
+    ("$MARMALADE_ROOT/s3e/edk/builder")
+    "edk_build s3eAmazonAds.s4e"
+}
+
+#include the extension builder subproject
+subproject "$MARMALADE_ROOT/s3e/edk"
+
+if {{defined I3D_OS_IPHONE}}
+{
+    subproject amazon-ads-ios-sdk
+    files
+    {
+        
+        ["source"]
+        (use_first_found, source/iphone, source/generic)
+        s3eAmazonAds_platform.mm
+        #Add any iphone-specific files here
+        s3eAmazonAds_decs.h
+        s3eAmazonAds_platform_extras.h
+        s3eAmazonAds_impl.m
+        s3eAmazonAds_impl.h
+        s3eAmazonAd.m
+        s3eAmazonAd.h
+    }
+    includepath source/iphone
+}
+
+if {{defined S3E_ANDROID}}
+{
+    files
+    {
+        ["source"]
+        (use_first_found, source/android, source/generic)
+        s3eAmazonAds_platform.cpp
+    }
+}
+
+files
+{
+
+    # Add any platform-independent files here
+    # Note that if the file exists in the platform-specific directory
+    # it will be taken from there instead of 'generic'
+    s3eAmazonAds_register.cpp
+    s3eAmazonAds.cpp
+
+    ["h"]
+    (source/h)
+    s3eAmazonAds_internal.h
+    s3eAmazonAds_autodefs.h
+
+    ["docs"]
+    (interface)
+    s3eAmazonAds.defines.txt
+
+    []
+    (.)
+    s3eAmazonAds.s4e
+}

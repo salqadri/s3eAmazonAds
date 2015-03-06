@@ -1,0 +1,17 @@
+#!/usr/bin/env mkb
+# Builder mkb file for the s3eAmazonAds extension on android
+platform LINUX
+
+buildtype (SCONS, ARM)
+
+define S3E_ANDROID
+
+options
+{
+    dll
+    output-name="lib/android/libs3eAmazonAds.so"
+    output-name-debug="lib/android/libs3eAmazonAds_d.so"
+}
+define S3E_BUILD_EXT
+
+subproject s3eAmazonAds_build
