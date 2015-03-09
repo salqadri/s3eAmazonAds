@@ -47,6 +47,8 @@ public class s3eAmazonAds
     // Globals
     private LoaderActivity g_Activity = LoaderAPI.getActivity();
     private float g_Density;
+    private int g_Width;
+    private int g_Height;
 
     // private float g_Scale;
     private static final int InvalidID = 0;
@@ -411,13 +413,14 @@ public class s3eAmazonAds
     //
     public int s3eAmazonAdsInit(String appKey, boolean enableTesting, boolean enableLogging)
     {
-        Log.i(LOG_TAG, "s3eAmazonAdsInit");
-
         DisplayMetrics metrics = new DisplayMetrics();
 
         LoaderAPI.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         g_Density=metrics.density;
+        g_Width=metrics.widthPixels;
+        g_Height=metrics.heightPixels;
+        Log.i(LOG_TAG, "s3eAmazonAdsInit width:" + g_Width + " height:" + g_Height + " density:" + g_Density);
 
         try
         {
@@ -512,7 +515,13 @@ public class s3eAmazonAds
     private ViewGroup.LayoutParams getLayoutParams(int position, boolean autosize, int w, int h)
     {
         ViewGroup.LayoutParams lp;
-            
+        Log.i(LOG_TAG, "s3eAmazonAdsGetAdOptions getLayoutParams width: " + w + " height: " + h);
+
+        if (w * g_Density > g_Width)
+        {
+            autosize = true;
+        }
+        
         lp = new FrameLayout.LayoutParams(
                 autosize ? LayoutParams.MATCH_PARENT : (int)(((float)w * g_Density)),
                 autosize ? LayoutParams.WRAP_CONTENT : (int)(((float)h * g_Density)),
