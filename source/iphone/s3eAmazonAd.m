@@ -10,6 +10,7 @@
  * EULA and have agreed to be bound by its terms.
  */
 
+#include "s3eSurface.h"
 #include "s3eAmazonAd.h"
 #include "s3eAmazonAds_impl.h"
 #import <AmazonAd/AmazonAdOptions.h>
@@ -121,11 +122,11 @@ const static struct
             width = m_Width;
             height = m_Height;
         }
-        else if (m_Size == S3E_AMAZONADS_SIZE_AUTO)
+        else if (m_Size == S3E_AMAZONADS_SIZE_AUTO || m_Size == S3E_AMAZONADS_SIZE_BEST_FIT)
         {
             // AUTO is covered explicitly on the android version but not currently on iOS.
             // To support, find the known size just smaller than the main view.
-            int mainViewWidth = [self viewControllerForPresentingModalView].view.frame.size.width;
+            int mainViewWidth = s3eSurfaceGetInt(S3E_SURFACE_WIDTH_UNSCALED);
             indx = 0;
             while (kSizeLookup[indx].m_Enum >= 0)
             {
@@ -228,15 +229,8 @@ const static struct
     UIViewController* viewController = [self viewControllerForPresentingModalView];
     if (m_AdView)
     {
-        CGSize screenSize = viewController.view.frame.size;
+        CGSize screenSize = CGSizeMake(s3eSurfaceGetInt(S3E_SURFACE_WIDTH_UNSCALED), s3eSurfaceGetInt(S3E_SURFACE_HEIGHT_UNSCALED));
         CGSize adSize = m_AdView.frame.size;
-
-        if ((NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation))
-        {
-            // iOS versions prior to 7.1 use orientation independent resolution
-            // so we need to swap width/height in lanscape
-            screenSize = CGSizeMake(viewController.view.frame.size.height, viewController.view.frame.size.width);
-        }
 
         // banner ad placement
         CGPoint adCenter;

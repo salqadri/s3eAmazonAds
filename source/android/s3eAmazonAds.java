@@ -413,6 +413,8 @@ public class s3eAmazonAds
     //
     public int s3eAmazonAdsInit(String appKey, boolean enableTesting, boolean enableLogging)
     {
+        Log.i(LOG_TAG, "s3eAmazonAdsInit");
+
         DisplayMetrics metrics = new DisplayMetrics();
 
         LoaderAPI.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);

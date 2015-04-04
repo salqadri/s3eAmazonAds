@@ -219,7 +219,8 @@ typedef enum s3eAmazonAdsSize
     S3E_AMAZONADS_SIZE_300x250   = 3,   ///< Suitable ad size for Android phone/tablet and Kindle Fire.
     S3E_AMAZONADS_SIZE_600x90    = 4,   ///< Suitable ad size for Android tablet and Kindle Fire. Unsupported on iOS.
     S3E_AMAZONADS_SIZE_728x90    = 5,   ///< Suitable ad size for Android tablet.
-    S3E_AMAZONADS_SIZE_1024x50   = 6    ///< Suitable ad size for Android tablet and Kindle Fire.
+    S3E_AMAZONADS_SIZE_1024x50   = 6,   ///< Suitable ad size for Android tablet and Kindle Fire.
+    S3E_AMAZONADS_SIZE_BEST_FIT  = 7,   ///< Automatically select best-fit ad size given the device dpi and resolution. Equals AUTO on iOS.
 } s3eAmazonAdsSize;
 
 
@@ -607,7 +608,9 @@ s3eResult s3eAmazonAdsShowAd(s3eAmazonAdsId id);
  */
 s3eResult s3eAmazonAdsInspectAd(s3eAmazonAdsId id, s3eAmazonAdsAdInfo* info);
 
+// \cond HIDDEN_DEFINES
 S3E_END_C_DECL
+// \endcond
 
 /** @} */
 

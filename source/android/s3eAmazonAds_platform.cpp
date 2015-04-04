@@ -18,6 +18,7 @@
 
 #include "s3eEdk.h"
 #include "s3eEdk_android.h"
+#include "s3eSurface.h"
 #include <jni.h>
 #include "IwDebug.h"
 #include <string.h>
@@ -342,9 +343,38 @@ s3eResult s3eAmazonAdsPrepareAd_platform(s3eAmazonAdsId* pId)
     return (res == S3E_AMAZONADS_ERR_NONE) ? S3E_RESULT_SUCCESS : S3E_RESULT_ERROR;
 }
 
+s3eAmazonAdsSize s3eAmazonAdsGetBestBannerSize()
+{
+    // get width and dpi
+    int32 width = s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
+    int32 ppi = s3eDeviceGetInt(S3E_DEVICE_PPI_LOGICAL);
+    int32 logical_width = (int) (width * (160.0 / (float) ppi));
+    IwTrace(AMAZONADS, ("Calculating the best banner size based on width: %d  ppi: %d", width, ppi));
+
+    if (logical_width >= 1024)
+        return S3E_AMAZONADS_SIZE_1024x50;
+    else if (logical_width >= 728)
+        return S3E_AMAZONADS_SIZE_728x90;
+    else if (logical_width >= 600)
+        return S3E_AMAZONADS_SIZE_600x90;
+    else if (logical_width >= 320)
+        return S3E_AMAZONADS_SIZE_320x50;
+    else if (logical_width >= 300)
+        return S3E_AMAZONADS_SIZE_300x50;
+
+    return S3E_AMAZONADS_SIZE_AUTO;
+}
+
 s3eResult s3eAmazonAdsPrepareAdLayout_platform(s3eAmazonAdsId id, s3eAmazonAdsPosition position, s3eAmazonAdsSize size, int width, int height)
 {
     JNIEnv* env = s3eEdkJNIGetEnv();
+
+    if (size == S3E_AMAZONADS_SIZE_BEST_FIT)
+    {
+        size = s3eAmazonAdsGetBestBannerSize();
+        IwTrace(AMAZONADS, ("Best banner size calculated: %d", size));
+    }
+
     int res = env->CallIntMethod(g_Obj, g_s3eAmazonAdsPrepareAdLayout, id, position, size, width, height);
 
     if (res == S3E_AMAZONADS_ERR_INVALID_ID) {
